@@ -45,17 +45,17 @@ bf = cv2.BFMatcher_create(cv2.NORM_HAMMING, crossCheck=False)
 
 bf.clear()
 
-clusters = np.array([des_db])
-bf.add(clusters)
-
-clusters2= np.array([des_test])
-bf.add(clusters2)
-
-clusters3= np.array([des_q])
-bf.add(clusters3)
-
-clusters4= np.array([des_test2])
-bf.add(clusters4)
+#clusters = np.array([des_db])
+#bf.add(clusters)
+#
+#clusters2= np.array([des_test])
+#bf.add(clusters2)
+#
+#clusters3= np.array([des_q])
+#bf.add(clusters3)
+#
+#clusters4= np.array([des_test2])
+#bf.add(clusters4)
 
 #clusters5= np.array([des_dist])
 #bf.add(clusters5)
@@ -63,12 +63,10 @@ bf.add(clusters4)
 
 
 
-DBNAME = 'sebastian'
+test = db.get_desc()
+test_des = np.asarray(test[0], dtype=np.uint8)
 
-db.add_desc(des_db, 'prueba', 'metal')
-
-
-
+bf.add(test_des)
 
 
 

@@ -49,8 +49,27 @@ def add_desc(descriptors, filename, genre):
     cur.close()
     conn.commit()
     conn.close()
+    
 
-add_desc(test_array,'holi','metal')
+def get_desc():
+    
+    conn = psycopg2.connect(database=DBNAME)
+    cur = conn.cursor()
+    
+    cur.execute('SELECT descriptors FROM audio_files;')
+    
+    desc_db = cur.fecthall()
+    
+    print('>>>Get')
+    
+    print(desc_db)
+    
+    
+    
+    cur.close()
+    conn.commit()
+    conn.close()
+
 
 
 

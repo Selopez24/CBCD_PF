@@ -7,6 +7,7 @@ Created on Tue Oct 16 09:35:52 2018
 """
 
 import psycopg2
+import numpy as np
 
 DBNAME = 'sebastian'
 
@@ -18,7 +19,7 @@ def update_desc(descriptors, audio_id):
     
     cur.execute('UPDATE audio_files SET descriptors = %s WHERE audio_id = %s;', (descriptors.tolist(), audio_id))
     
-    print('>>>Updated in DB')
+    print('>>>Updat in DB')
     
     
     
@@ -33,10 +34,33 @@ def add_desc(descriptors, filename, genre):
     
     cur.execute('INSERT INTO audio_files(filename, genre, descriptors) VALUES (%s, %s, %s);' , (filename, genre, descriptors.tolist()))
     
-    print('>>>Added to DB')
+    print('>>>Add to DB')
     
     
     
     cur.close()
     conn.commit()
     conn.close()
+    
+    
+def get_desc():
+    
+    conn = psycopg2.connect(database=DBNAME)
+    cur = conn.cursor()
+    
+    cur.execute('SELECT descriptors FROM audio_files;')
+    
+    desc_db = cur.fetchall()
+    
+    print('>>>Get from DB')
+    
+    
+    
+    
+    cur.close()
+    conn.commit()
+    conn.close()
+    
+    return desc_db
+    
+

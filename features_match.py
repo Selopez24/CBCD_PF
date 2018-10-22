@@ -22,14 +22,14 @@ time0 = time()
 # Brute Force Matching and add cluster of training
 bf = cv2.BFMatcher_create(cv2.NORM_HAMMING, crossCheck=False)
 bf.clear()
-
 # Initiate ORB detector
 orb = cv2.ORB_create()
 
-def train_matcher(dataset,min_file_number,max_file_number):
+#Function to fill the DB from local files
+def data2db(dataset,min_file_number,max_file_number):
     for filename in glob.iglob(dataset):  #Read every .wav file in directory 
     
-        if min_file_number<=max_file_number   : 
+        if min_file_number<max_file_number   : 
         
             filename = "../dataset.wav/%s.wav/%s%d.wav" % (genre, genre, min_file_number) 
             
@@ -50,13 +50,54 @@ def train_matcher(dataset,min_file_number,max_file_number):
             db.add_desc(des_db, filename, genre) #Fills the database 
 
             
+           
+            min_file_number+=1
+            print(filename)
+            
+            
+            
+ # Function to train the system with local files           
+def train_local(dataset,min_file_number,max_file_number):
+    for filename in glob.iglob(dataset):  #Read every .wav file in directory 
+    
+        if min_file_number<max_file_number   : 
+        
+            filename = "../dataset.wav/%s.wav/%s%d.wav" % (genre, genre, min_file_number) 
+            
+            spectrogram_gen(filename, '0')        # file_name // fig_id
+    
+    
+            
+            img_db = cv2.imread('../figures/fig_%s.png' % ('0'), cv2.IMREAD_GRAYSCALE)
+            
+            
+            
+            
+            # find the keypoints and descriptors with ORB
+            kp_db, des_db = orb.detectAndCompute(img_db, None)
+            
+            
+            
+
             clusters = np.array([des_db])
             bf.add(clusters)
+           
             min_file_number+=1
             print(filename)
        
 
-train_matcher(dataset, min_file_number, max_file_number)
+# Function to train the system from descriptors in DB
+def train_fromdb():
+    get_desdb = db.get_desc()
+    for descriptor in range(len(get_desdb)):
+        des_fromdb= np.asarray(get_desdb[descriptor],  dtype=np.uint8)
+        bf.add(des_fromdb)
+        
+        
+train_fromdb()
+        
+        
+
 
 # Audio sample in ====>
 
