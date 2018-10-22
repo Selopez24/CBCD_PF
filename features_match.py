@@ -1,10 +1,10 @@
 import cv2
 import numpy as np
-from matplotlib import pyplot as plt
 from time import time
 from spectrogram import spectrogram_gen
 import glob
-from scipy import stats
+import descdb as db
+
 
 #Parameters edfinition
 
@@ -47,7 +47,8 @@ def train_matcher(dataset,min_file_number,max_file_number):
             
             
             
-            
+            db.add_desc(des_db, filename, genre) #Fills the database 
+
             
             clusters = np.array([des_db])
             bf.add(clusters)

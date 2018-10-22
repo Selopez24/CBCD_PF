@@ -18,7 +18,7 @@ def update_desc(descriptors, audio_id):
     
     cur.execute('UPDATE audio_files SET descriptors = %s WHERE audio_id = %s;', (descriptors.tolist(), audio_id))
     
-    print('>>>Update')
+    print('>>>Updated in DB')
     
     
     
@@ -33,7 +33,7 @@ def add_desc(descriptors, filename, genre):
     
     cur.execute('INSERT INTO audio_files(filename, genre, descriptors) VALUES (%s, %s, %s);' , (filename, genre, descriptors.tolist()))
     
-    print('>>>Add')
+    print('>>>Added to DB')
     
     
     
