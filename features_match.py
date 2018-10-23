@@ -94,12 +94,14 @@ def train_fromdb():
         bf.add(des_fromdb)
         
         
-train_fromdb()
         
         
 
 
 # Audio sample in ====>
+        
+train_fromdb()
+
 
 file_ext = '0_+bass_echo'
 test_file = "../dataset.wav/%s.wav/%s%s.wav" % (genre, genre, file_ext)
