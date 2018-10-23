@@ -20,5 +20,5 @@ def spectrogram_gen (audio_file, fig_id):
 
 
 
-spectrogram_gen('../dataset.wav/metal.wav/metal0.wav', '_dist')
+spectrogram_gen('../dataset.wav/metal.wav/metal14.wav', 'nocqpasa')
 plt.show()

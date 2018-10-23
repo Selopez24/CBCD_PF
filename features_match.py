@@ -8,8 +8,6 @@ import descdb as db
 
 #Parameters edfinition
 
-min_file_number = 0 #Sample min index
-max_file_number = 5 #Sample max index
 genre = 'metal' # Genre to read 
 dataset = '../dataset.wav/%s.wav/*.wav' % (genre)
 
@@ -100,10 +98,12 @@ def train_fromdb():
 
 # Audio sample in ====>
         
+#train_local(dataset, 0, 10)
 train_fromdb()
-
-
-file_ext = '0_+bass_echo'
+    
+file_id= '45'
+distortion = {1:'', 2:'_+20db', 3:'_+bass_echo'}; d_id=3 #Select a distorion based in the dictionaty 'distortion'
+file_ext = file_id+distortion[d_id]
 test_file = "../dataset.wav/%s.wav/%s%s.wav" % (genre, genre, file_ext)
 fig_query = 'test'
 fig_path = '../figures/fig_%s.png'
