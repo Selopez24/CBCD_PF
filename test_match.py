@@ -84,3 +84,15 @@ for i in range(len(matches)):
 time1 = time()
 
 print(time1-time0)
+
+matches = bf.match(des_q, des_db)
+
+
+
+matching_result = cv2.drawMatches(img_q, kp_q, img_db, kp_db, matches[:25], None, flags=2)
+
+cv2.imshow("img_q", img_q)
+cv2.imshow("img_db", img_db)
+cv2.imshow("Matching result", matching_result)
+cv2.waitKey(0)
+cv2.destroyAllWindows()

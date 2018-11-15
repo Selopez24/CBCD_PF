@@ -7,7 +7,7 @@ Created on Tue Oct 16 09:35:52 2018
 """
 
 import psycopg2
-import numpy as np
+
 
 DBNAME = 'sebastian'
 
@@ -62,5 +62,23 @@ def get_desc():
     conn.close()
     
     return desc_db
+
+def get_candidates(candidate_id):
+    conn = psycopg2.connect(database=DBNAME)
+    cur = conn.cursor()
     
+    cur.execute('SELECT filename FROM audio_files WHERE audio_id = (%s);', (candidate_id))
+    
+    desc_db = cur.fetchall()
+    
+    print('>>>Get from DB')
+    
+    
+    
+    
+    cur.close()
+    conn.commit()
+    conn.close()
+    
+    return desc_db
 

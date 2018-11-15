@@ -9,7 +9,7 @@ import descdb as db
 #Parameters edfinition
 
 genre = 'metal' # Genre to read 
-dataset = '../dataset.wav/%s.wav/*.wav' % (genre)
+dataset = '../dataset.wav/%s.wav/*.wav' % ('jazz')
 
 
 
@@ -29,7 +29,7 @@ def data2db(dataset,min_file_number,max_file_number):
     
         if min_file_number<max_file_number   : 
         
-            filename = "../dataset.wav/%s.wav/%s%d.wav" % (genre, genre, min_file_number) 
+            filename = "../dataset.wav/%s.wav/%s%d.wav" % ('jazz', 'jazz', min_file_number) 
             
             spectrogram_gen(filename, '0')        # file_name // fig_id
     
@@ -45,14 +45,14 @@ def data2db(dataset,min_file_number,max_file_number):
             
             
             
-            db.add_desc(des_db, filename, genre) #Fills the database 
+            db.add_desc(des_db, filename, 'jazz') #Fills the database 
 
             
            
             min_file_number+=1
             print(filename)
             
-            
+data2db(dataset,0,100)            
             
  # Function to train the system with local files           
 def train_local(dataset,min_file_number,max_file_number):
@@ -129,7 +129,17 @@ for i in range(len(matches)):
     #print (matches[i].distance)
 
 
+#Finding files id corresponding to the matches, based on the mean of cumulative frequencies of all matched descriptor
 unique_elements, counts_elements = np.unique(matches_id_array, return_counts=True)
+
+candidates_index= np.where(counts_elements>counts_elements.mean())
+candidates_id = np.array([])
+
+for i in range(len(candidates_index[0])):
+    candidates_id = np.append(candidates_id, unique_elements[candidates_index[0][i]])
+    
+print(candidates_id) # id of candidates based on the index of BFmatcher
+    
 
 time1 = time()
 
