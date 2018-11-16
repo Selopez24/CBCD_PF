@@ -72,7 +72,34 @@ def get_desc():
 
 
 
+def get_candidate_name(candidates_id): #Query to get individual name based on id
+    conn = psycopg2.connect(database=DBNAME)
+    cur = conn.cursor()
+    
+    
+    
+    cur.execute('SELECT filename FROM audio_files WHERE audio_id = (%s);', (candidates_id,))
+    
+    candidate_name = cur.fetchall()
+    
+    
+    print('>>>Get from DB')
+    
+    
+    
+    
+    cur.close()
+    conn.commit()
+    conn.close()
+    
+    return candidate_name
 
+def get_names(): #Function to get all candidates filenames
+    names = np.array([])
+    for i in range(len(candidates_id)):
+        names = np.append(names,get_candidate_name(candidates_id[i]))
+    
+    return names
 
 
 #def add_desc(content):

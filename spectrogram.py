@@ -15,11 +15,10 @@ def spectrogram_gen (audio_file, fig_id):
     plt.ylim(bottom=20)
     plt.ylabel('Frequency [Hz]', fontsize = 18)
     plt.xlabel('Time [sec]',fontsize = 18)
-   # plt.axis('off')
+    #plt.axis('off')
     plt.savefig('../figures/fig_%s.png' % (fig_id), bbox_inches= 'tight')
 
 
 
-spectrogram_gen('../dataset.wav/metal.wav/metal14.wav', 'nocqpasa')
-plt.show()
+
 

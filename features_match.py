@@ -9,7 +9,7 @@ import descdb as db
 #Parameters edfinition
 
 genre = 'metal' # Genre to read 
-dataset = '../dataset.wav/%s.wav/*.wav' % ('jazz')
+dataset = '../dataset.wav/%s.wav/*.wav' % (genre)
 
 
 
@@ -29,7 +29,7 @@ def data2db(dataset,min_file_number,max_file_number):
     
         if min_file_number<max_file_number   : 
         
-            filename = "../dataset.wav/%s.wav/%s%d.wav" % ('jazz', 'jazz', min_file_number) 
+            filename = "../dataset.wav/%s.wav/%s%d.wav" % (genre, genre, min_file_number) 
             
             spectrogram_gen(filename, '0')        # file_name // fig_id
     
@@ -45,14 +45,13 @@ def data2db(dataset,min_file_number,max_file_number):
             
             
             
-            db.add_desc(des_db, filename, 'jazz') #Fills the database 
+            db.add_data(des_db, filename, genre) #Fills the database 
 
             
            
             min_file_number+=1
             print(filename)
             
-data2db(dataset,0,100)            
             
  # Function to train the system with local files           
 def train_local(dataset,min_file_number,max_file_number):
@@ -111,35 +110,41 @@ fig_path = '../figures/fig_%s.png'
 
 spectrogram_gen(test_file, fig_query ) #query file // fig_id
 img_q = cv2.imread(fig_path % (fig_query), cv2.IMREAD_GRAYSCALE) # image for kp and desc extratcion 
-kp_q, des_q = orb.detectAndCompute(img_q, None) # kp and desc for query image/audio sample
+kp_q, desc_q = orb.detectAndCompute(img_q, None) # kp and desc for query image/audio sample
 
 
-
-matches = bf.match(des_q)
-matches = sorted(matches, key = lambda x:x.distance)
-
-matches_id_array = np.array([])
-matches_distance_array = np.array([])
-
-#Indexing
-for i in range(len(matches)):
-    matches_id_array= np.append(matches_id_array,[matches[i].imgIdx]) 
-    matches_distance_array=np.append(matches_distance_array,[matches[i].distance]) 
-    print (matches[i].imgIdx)
-    #print (matches[i].distance)
-
-
-#Finding files id corresponding to the matches, based on the mean of cumulative frequencies of all matched descriptor
-unique_elements, counts_elements = np.unique(matches_id_array, return_counts=True)
-
-candidates_index= np.where(counts_elements>counts_elements.mean())
-candidates_id = np.array([])
-
-for i in range(len(candidates_index[0])):
-    candidates_id = np.append(candidates_id, unique_elements[candidates_index[0][i]])
+def get_candidates_id(desc_q):
     
-print(candidates_id) # id of candidates based on the index of BFmatcher
+    matches = bf.match(desc_q)
+    matches = sorted(matches, key = lambda x:x.distance)
     
+    
+    
+    matches_id_array = np.array([])
+    matches_distance_array = np.array([])
+    
+    #Indexing
+    for i in range(len(matches)):
+        matches_id_array= np.append(matches_id_array,[matches[i].imgIdx]) 
+        matches_distance_array=np.append(matches_distance_array,[matches[i].distance]) 
+        print (matches[i].imgIdx)
+        #print (matches[i].distance)
+    
+    
+    #Finding files id corresponding to the matches, based on the mean of cumulative frequencies of all matched descriptor
+    unique_elements, counts_elements = np.unique(matches_id_array, return_counts=True)
+    
+    candidates_index= np.where(counts_elements>counts_elements.mean())
+    candidates_id = np.array([])
+    
+    for i in range(len(candidates_index[0])):
+        candidates_id = np.append(candidates_id, unique_elements[candidates_index[0][i]])
+        
+    print(candidates_id) # id of candidates based on the index of BFmatcher
+    
+    return candidates_id
+    
+get_candidates_id(desc_q)
 
 time1 = time()
 
