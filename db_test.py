@@ -85,6 +85,22 @@ def get_candidate_name(candidates_id): #Query to get individual name based on id
     
     print('>>>Get from DB')
     
+    return candidate_name
+
+
+def get_candidate_fs(candidates_id): #Query to get individual name based on id
+    conn = psycopg2.connect(database=DBNAME)
+    cur = conn.cursor()
+    
+    
+    
+    cur.execute('SELECT fs FROM audio_files WHERE audio_id = (%s);', (candidates_id,))
+    
+    candidate_fs = cur.fetchall()
+    
+    
+    print('>>>Get from DB')
+    
     
     
     
@@ -92,14 +108,57 @@ def get_candidate_name(candidates_id): #Query to get individual name based on id
     conn.commit()
     conn.close()
     
-    return candidate_name
+    return candidate_fs
 
-def get_names(): #Function to get all candidates filenames
+def get_candidate_data(filename): #Query to get individual name based on id
+    conn = psycopg2.connect(database=DBNAME)
+    cur = conn.cursor()
+    
+    
+    
+    cur.execute('SELECT data FROM audio_files WHERE filename = (%s);', (filename,))
+    
+    candidate_data = cur.fetchall()
+    
+    
+    print('>>>Get from DB')
+    
+    
+    
+    
+    cur.close()
+    conn.commit()
+    conn.close()
+    
+    return candidate_data
+
+def get_names(candidates_id): #Function to get all candidates filenames based on id
     names = np.array([])
     for i in range(len(candidates_id)):
         names = np.append(names,get_candidate_name(candidates_id[i]))
-    
+
+    #print(names)
     return names
+
+
+def get_fs(candidates_id): #Function to get all candidates filenames based on id
+    fs = np.array([])
+    for i in range(len(candidates_id)):
+        fs = np.append(fs,get_candidate_fs(candidates_id[i]))
+
+    #print(names)
+    return fs
+
+def get_data(filename): #Function to get all candidates filenames based on id
+    data = np.array([])
+    data = get_candidate_data(filename)
+  
+    data = np.append(data,0 )
+    
+    data = np.delete(data,len(data)-1)
+
+    #print(names)
+    return data
 
 
 #def add_desc(content):

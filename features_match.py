@@ -4,11 +4,11 @@ from time import time
 from spectrogram import spectrogram_gen
 import glob
 import descdb as db
-
+import match_functions as match
 
 #Parameters edfinition
 
-genre = 'metal' # Genre to read 
+genre = 'classical' # Genre to read 
 dataset = '../dataset.wav/%s.wav/*.wav' % (genre)
 
 
@@ -31,7 +31,7 @@ def data2db(dataset,min_file_number,max_file_number):
         
             filename = "../dataset.wav/%s.wav/%s%d.wav" % (genre, genre, min_file_number) 
             
-            spectrogram_gen(filename, '0')        # file_name // fig_id
+            data, fs = spectrogram_gen(filename, '0')        # file_name // fig_id
     
     
             
@@ -45,12 +45,13 @@ def data2db(dataset,min_file_number,max_file_number):
             
             
             
-            db.add_data(des_db, filename, genre) #Fills the database 
+            db.add_data(des_db, filename, genre, data, fs) #Fills the database 
 
             
            
             min_file_number+=1
             print(filename)
+            
             
             
  # Function to train the system with local files           
@@ -90,6 +91,8 @@ def train_fromdb():
         des_fromdb= np.asarray(get_desdb[descriptor],  dtype=np.uint8)
         bf.add(des_fromdb)
         
+    
+        
         
         
         
@@ -98,7 +101,9 @@ def train_fromdb():
 # Audio sample in ====>
         
 #train_local(dataset, 0, 10)
-train_fromdb()
+#train_fromdb()
+#data2db(dataset, 65, 100)        
+        
     
 file_id= '45'
 distortion = {1:'', 2:'_+20db', 3:'_+bass_echo'}; d_id=3 #Select a distorion based in the dictionaty 'distortion'
@@ -144,7 +149,8 @@ def get_candidates_id(desc_q):
     
     return candidates_id
     
-get_candidates_id(desc_q)
+candidates_id = get_candidates_id(desc_q)
+#data = db.get_candidate_data(candidate_id)
 
 time1 = time()
 

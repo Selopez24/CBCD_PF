@@ -45,28 +45,28 @@ bf = cv2.BFMatcher_create(cv2.NORM_HAMMING, crossCheck=False)
 
 bf.clear()
 
-#clusters = np.array([des_db])
-#bf.add(clusters)
+clusters = np.array([des_db])
+bf.add(clusters)
+
+clusters2= np.array([des_test])
+bf.add(clusters2)
+
+clusters3= np.array([des_q])
+bf.add(clusters3)
+
+clusters4= np.array([des_test2])
+bf.add(clusters4)
+
+clusters5= np.array([des_dist])
+bf.add(clusters5)
+
+
+
+
+#test = db.get_desc()
+#test_des = np.asarray(test[0], dtype=np.uint8)
 #
-#clusters2= np.array([des_test])
-#bf.add(clusters2)
-#
-#clusters3= np.array([des_q])
-#bf.add(clusters3)
-#
-#clusters4= np.array([des_test2])
-#bf.add(clusters4)
-
-#clusters5= np.array([des_dist])
-#bf.add(clusters5)
-
-
-
-
-test = db.get_desc()
-test_des = np.asarray(test[0], dtype=np.uint8)
-
-bf.add(test_des)
+#bf.add(test_des)
 
 
 
@@ -89,10 +89,10 @@ matches = bf.match(des_q, des_db)
 
 
 
-matching_result = cv2.drawMatches(img_q, kp_q, img_db, kp_db, matches[:25], None, flags=2)
-
-cv2.imshow("img_q", img_q)
-cv2.imshow("img_db", img_db)
-cv2.imshow("Matching result", matching_result)
-cv2.waitKey(0)
-cv2.destroyAllWindows()
+#matching_result = cv2.drawMatches(img_q, kp_q, img_db, kp_db, matches[:25], None, flags=2)
+#
+#cv2.imshow("img_q", img_q)
+#cv2.imshow("img_db", img_db)
+#cv2.imshow("Matching result", matching_result)
+#cv2.waitKey(0)
+#cv2.destroyAllWindows()

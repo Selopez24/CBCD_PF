@@ -14,7 +14,9 @@ import descdb as db
 import glob
 import cv2
 import numpy as np
-from match_functions import spectrogram_gen
+import match_functions as match
+import librosa
+from psycopg2.extensions import register_adapter, AsIs
 
 
 DBNAME = 'sebastian'  ## DB according to user or service
@@ -45,12 +47,15 @@ def update_desc(descriptors, audio_id): ## function to update descriptors or any
     conn.commit()
     conn.close()
 
-def add_data(descriptors, filename, genre): # Function to fill db from any data
+def add_data(descriptors, filename, genre, data, fs): # Function to fill db from any file
     
     conn = psycopg2.connect(database=DBNAME)
     cur = conn.cursor()
+
+
+
     
-    cur.execute('INSERT INTO audio_files(filename, genre, descriptors) VALUES (%s, %s, %s);' , (filename, genre, descriptors.tolist()))
+    cur.execute('INSERT INTO audio_files(filename, genre, descriptors, data, fs) VALUES (%s, %s, %s, %s, %s);' , (filename, genre, descriptors.tolist(), data.tolist(), fs))
     
     print('>>>Add to DB')
     
@@ -60,7 +65,7 @@ def add_data(descriptors, filename, genre): # Function to fill db from any data
     conn.commit()
     conn.close()
     
-    
+
 def get_desc(): #Query to get descriptors
     
     conn = psycopg2.connect(database=DBNAME)
@@ -93,7 +98,7 @@ def data2db(dataset, genre, min_file_number, max_file_number):
         
             filename = "../dataset.wav/%s.wav/%s%d.wav" % (genre, genre, min_file_number) 
             
-            spectrogram_gen(filename, '0')        # file_name // fig_id
+            data, fs = match.spectrogram_gen(filename, '0')        # file_name // fig_id
     
     
             
@@ -107,7 +112,7 @@ def data2db(dataset, genre, min_file_number, max_file_number):
             
             
             
-            add_data(des_db, filename, genre) #Fills the database 
+            add_data(des_db, filename, genre, data, fs) #Fills the database 
 
             
            
@@ -130,16 +135,84 @@ def get_candidate_name(candidate_id): #Query to get individual name based on id
     
     
     
-    
+
     cur.close()
     conn.commit()
     conn.close()
     
     return candidate_name
 
+def get_candidate_fs(filename): #Query to get individual name based on id
+    conn = psycopg2.connect(database=DBNAME)
+    cur = conn.cursor()
+    
+    
+    
+    cur.execute('SELECT fs FROM audio_files WHERE filename = (%s);', (filename,))
+    
+    candidate_fs = cur.fetchall()
+    
+    
+    print('>>>Get from DB')
+    
+    
+    
+    
+    cur.close()
+    conn.commit()
+    conn.close()
+    
+    return candidate_fs
+
+def get_candidate_data(filename): #Query to get individual name based on id
+    conn = psycopg2.connect(database=DBNAME)
+    cur = conn.cursor()
+    
+    
+    
+    cur.execute('SELECT data FROM audio_files WHERE filename = (%s);', (filename,))
+    
+    candidate_data = cur.fetchall()
+    
+    
+    print('>>>Get from DB')
+    
+    
+    
+    
+    cur.close()
+    conn.commit()
+    conn.close()
+    
+    return candidate_data
+
 def get_names(candidates_id): #Function to get all candidates filenames based on id
     names = np.array([])
     for i in range(len(candidates_id)):
         names = np.append(names,get_candidate_name(candidates_id[i]))
-    print(names)
+
+    #print(names)
     return names
+
+def get_fs(filename): #Function to get all candidates filenames based on id
+    fs = np.array([])
+    fs = get_candidate_fs(filename)
+
+    fs = np.append(fs,0)
+
+    fs = np.delete(fs,len(fs)-1)
+
+
+    #print(names)
+    return fs
+
+def get_data(filename): #Function to get all candidates filenames based on id
+    data = np.array([])
+    data = get_candidate_data(filename)
+  
+    data = np.append(data,0 )
+    
+    data = np.delete(data,len(data)-1)
+
+    #print(names)
+    return data

@@ -5,6 +5,7 @@ import descdb as db
 import glob
 import cv2
 import numpy as np
+import librosa
 
 
 
@@ -23,7 +24,7 @@ orb = cv2.ORB_create()
 def spectrogram_gen (audio_file, fig_id): #Generates spectrogram to fingerprint an audio file
     
     #Reading song
-    fs, data = wavfile.read(audio_file)
+    data, fs = librosa.load(audio_file)
     
     #Hanning window, 8192 points and 0.75 overlap as in [22]
     f, t, Sxx = signal.spectrogram(data, fs, window=('hann'),nperseg=8192 ,noverlap=0.75) 
@@ -32,8 +33,11 @@ def spectrogram_gen (audio_file, fig_id): #Generates spectrogram to fingerprint 
     plt.ylim(bottom=20)
     plt.ylabel('Frequency [Hz]', fontsize = 18)
     plt.xlabel('Time [sec]',fontsize = 18)
-   # plt.axis('off')
+    #plt.title(audio_file, fontsize = 18)
+    #plt.axis('off')
     plt.savefig('../figures/fig_%s.png' % (fig_id), bbox_inches= 'tight')
+    
+    return data, fs
 
 
 # Function to train the system with local files based on folders structure and filenames used
@@ -91,7 +95,7 @@ def get_candidates_id(desc_q): # function to get candidates id based on the orde
     for i in range(len(matches)):
         matches_id_array= np.append(matches_id_array,[matches[i].imgIdx]) 
         matches_distance_array=np.append(matches_distance_array,[matches[i].distance]) 
-        print (matches[i].imgIdx)
+        #print (matches[i].imgIdx)
         #print (matches[i].distance)
     
     
@@ -104,6 +108,6 @@ def get_candidates_id(desc_q): # function to get candidates id based on the orde
     for i in range(len(candidates_index[0])):
         candidates_id = np.append(candidates_id, unique_elements[candidates_index[0][i]])
         
-    print(candidates_id) # id of candidates based on the index of BFmatcher
+    #print(candidates_id) # id of candidates based on the index of BFmatcher
     
     return candidates_id

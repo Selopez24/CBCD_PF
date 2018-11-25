@@ -11,6 +11,7 @@ Created on Thu Nov 15 23:48:40 2018
 import descdb as db
 import match_functions as match
 import cv2
+import numpy as np
 
 match.train_fromdb()
 
@@ -27,13 +28,18 @@ test_file = "../dataset.wav/%s.wav/%s%s.wav" % (genre, genre, file_ext)
 fig_query = 'test'
 fig_path = '../figures/fig_%s.png'
 
-
+#Generate spectrogram of query file
 match.spectrogram_gen(test_file, fig_query ) #query file // fig_id
 img_q = cv2.imread(fig_path % (fig_query), cv2.IMREAD_GRAYSCALE) # image for kp and desc extratcion 
 kp_q, desc_q = orb.detectAndCompute(img_q, None) # kp and desc for query image/audio sample
 
 # Candidates output ====>
 
+
+
 candidates_id = match.get_candidates_id(desc_q)
 
 names = db.get_names(candidates_id)
+data_holi = db.get_data(names[0])
+
+print(names)
